@@ -12,57 +12,40 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
-import { Save, Clock, Coffee, Sun, Moon } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
+import { Save, Clock, Coffee, Sun, Moon, Bell, Volume2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
+import { usePomodoroStore, PomodoroSettings } from '@/store/pomodoroStore';
 
 interface SettingsModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-interface Settings {
-  pomodoroDuration: number;
-  shortBreakDuration: number;
-  longBreakDuration: number;
-  longBreakInterval: number;
-  theme: 'light' | 'dark' | 'system';
-}
-
 export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
   const { toast } = useToast();
+  const { settings, updateSettings } = usePomodoroStore();
   
-  const [settings, setSettings] = useState<Settings>({
-    pomodoroDuration: 25,
-    shortBreakDuration: 5,
-    longBreakDuration: 15,
-    longBreakInterval: 4,
-    theme: 'system'
-  });
-
+  const [localSettings, setLocalSettings] = useState<PomodoroSettings>(settings);
   const [isDirty, setIsDirty] = useState(false);
 
-  // Load settings from localStorage on mount
+  // Sync with store settings when modal opens
   useEffect(() => {
-    const savedSettings = localStorage.getItem('pomodoroSettings');
-    if (savedSettings) {
-      try {
-        const parsed = JSON.parse(savedSettings);
-        setSettings(prev => ({ ...prev, ...parsed }));
-      } catch (error) {
-        console.error('Failed to parse saved settings:', error);
-      }
+    if (isOpen) {
+      setLocalSettings(settings);
+      setIsDirty(false);
     }
-  }, []);
+  }, [isOpen, settings]);
 
-  const handleSettingChange = (key: keyof Settings, value: any) => {
-    setSettings(prev => ({ ...prev, [key]: value }));
+  const handleSettingChange = (key: keyof PomodoroSettings, value: any) => {
+    setLocalSettings(prev => ({ ...prev, [key]: value }));
     setIsDirty(true);
   };
 
   const handleSave = () => {
     // Validate settings
-    if (settings.pomodoroDuration < 1 || settings.pomodoroDuration > 60) {
+    if (localSettings.pomodoroDuration < 1 || localSettings.pomodoroDuration > 60) {
       toast({
         title: '⚠️ Invalid Duration',
         description: 'Pomodoro duration must be between 1 and 60 minutes.',
@@ -71,7 +54,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
       return;
     }
 
-    if (settings.shortBreakDuration < 1 || settings.shortBreakDuration > 30) {
+    if (localSettings.shortBreakDuration < 1 || localSettings.shortBreakDuration > 30) {
       toast({
         title: '⚠️ Invalid Duration', 
         description: 'Short break duration must be between 1 and 30 minutes.',
@@ -80,7 +63,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
       return;
     }
 
-    if (settings.longBreakDuration < 1 || settings.longBreakDuration > 60) {
+    if (localSettings.longBreakDuration < 1 || localSettings.longBreakDuration > 60) {
       toast({
         title: '⚠️ Invalid Duration',
         description: 'Long break duration must be between 1 and 60 minutes.',
@@ -89,11 +72,11 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
       return;
     }
 
-    // Save to localStorage
-    localStorage.setItem('pomodoroSettings', JSON.stringify(settings));
+    // Update store
+    updateSettings(localSettings);
     
     // Apply theme
-    applyTheme(settings.theme);
+    applyTheme(localSettings.theme);
     
     setIsDirty(false);
     
@@ -117,11 +100,15 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
   };
 
   const handleReset = () => {
-    setSettings({
+    setLocalSettings({
       pomodoroDuration: 25,
       shortBreakDuration: 5,
       longBreakDuration: 15,
       longBreakInterval: 4,
+      autoStartBreaks: false,
+      autoStartPomodoros: false,
+      notifications: true,
+      sounds: true,
       theme: 'system'
     });
     setIsDirty(true);
@@ -178,7 +165,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
                       type="number"
                       min="1"
                       max="60"
-                      value={settings.pomodoroDuration}
+                      value={localSettings.pomodoroDuration}
                       onChange={(e) => handleSettingChange('pomodoroDuration', parseInt(e.target.value))}
                       className="bg-input/50 border-glass-border"
                     />
@@ -196,7 +183,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
                       type="number"
                       min="1"
                       max="30"
-                      value={settings.shortBreakDuration}
+                      value={localSettings.shortBreakDuration}
                       onChange={(e) => handleSettingChange('shortBreakDuration', parseInt(e.target.value))}
                       className="bg-input/50 border-glass-border"
                     />
@@ -214,7 +201,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
                       type="number"
                       min="1"
                       max="60"
-                      value={settings.longBreakDuration}
+                      value={localSettings.longBreakDuration}
                       onChange={(e) => handleSettingChange('longBreakDuration', parseInt(e.target.value))}
                       className="bg-input/50 border-glass-border"
                     />
@@ -232,7 +219,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
                       type="number"
                       min="2"
                       max="8"
-                      value={settings.longBreakInterval}
+                      value={localSettings.longBreakInterval}
                       onChange={(e) => handleSettingChange('longBreakInterval', parseInt(e.target.value))}
                       className="bg-input/50 border-glass-border"
                     />
@@ -261,11 +248,11 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
                   ].map(({ value, label, icon: Icon }) => (
                     <Button
                       key={value}
-                      variant={settings.theme === value ? 'default' : 'outline'}
+                      variant={localSettings.theme === value ? 'default' : 'outline'}
                       onClick={() => handleSettingChange('theme', value)}
                       className={cn(
                         "flex items-center gap-2 transition-all duration-200",
-                        settings.theme === value && 'bg-gradient-primary shadow-glow'
+                        localSettings.theme === value && 'bg-gradient-primary shadow-glow'
                       )}
                     >
                       <Icon className="w-4 h-4" />
@@ -273,6 +260,61 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
                     </Button>
                   ))}
                 </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Notifications & Automation */}
+          <Card className="bg-gradient-glass border-glass-border">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-text-primary">
+                <Bell className="w-5 h-5" />
+                Notifications & Automation
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="space-y-1">
+                  <Label className="text-text-primary font-medium">Notifications</Label>
+                  <p className="text-sm text-text-secondary">Show browser notifications when timer completes</p>
+                </div>
+                <Switch
+                  checked={localSettings.notifications}
+                  onCheckedChange={(checked) => handleSettingChange('notifications', checked)}
+                />
+              </div>
+              
+              <div className="flex items-center justify-between">
+                <div className="space-y-1">
+                  <Label className="text-text-primary font-medium">Sounds</Label>
+                  <p className="text-sm text-text-secondary">Play notification sounds</p>
+                </div>
+                <Switch
+                  checked={localSettings.sounds}
+                  onCheckedChange={(checked) => handleSettingChange('sounds', checked)}
+                />
+              </div>
+              
+              <div className="flex items-center justify-between">
+                <div className="space-y-1">
+                  <Label className="text-text-primary font-medium">Auto-start Breaks</Label>
+                  <p className="text-sm text-text-secondary">Automatically start break timers</p>
+                </div>
+                <Switch
+                  checked={localSettings.autoStartBreaks}
+                  onCheckedChange={(checked) => handleSettingChange('autoStartBreaks', checked)}
+                />
+              </div>
+              
+              <div className="flex items-center justify-between">
+                <div className="space-y-1">
+                  <Label className="text-text-primary font-medium">Auto-start Pomodoros</Label>
+                  <p className="text-sm text-text-secondary">Automatically start focus sessions after breaks</p>
+                </div>
+                <Switch
+                  checked={localSettings.autoStartPomodoros}
+                  onCheckedChange={(checked) => handleSettingChange('autoStartPomodoros', checked)}
+                />
               </div>
             </CardContent>
           </Card>

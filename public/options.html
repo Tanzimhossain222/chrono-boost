@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pomodoro Timer Pro - Settings</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 2rem;
+            font-weight: 600;
+        }
+        
+        .header p {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            background: #f9fafb;
+        }
+        
+        .section h3 {
+            margin: 0 0 15px 0;
+            color: #374151;
+            font-size: 1.2rem;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #374151;
+            font-weight: 500;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+        }
+        
+        .save-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .save-button:hover {
+            transform: translateY(-2px);
+        }
+        
+        .save-button:active {
+            transform: translateY(0);
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .success-message {
+            background: #10b981;
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🍅 Pomodoro Timer Pro</h1>
+            <p>Customize your productivity experience</p>
+        </div>
+        
+        <div class="content">
+            <div class="success-message" id="successMessage">
+                Settings saved successfully!
+            </div>
+            
+            <div class="section">
+                <h3>⏱️ Timer Durations</h3>
+                <div class="grid">
+                    <div class="form-group">
+                        <label for="pomodoroDuration">Pomodoro Duration (minutes)</label>
+                        <input type="number" id="pomodoroDuration" min="1" max="60" value="25">
+                    </div>
+                    <div class="form-group">
+                        <label for="shortBreakDuration">Short Break (minutes)</label>
+                        <input type="number" id="shortBreakDuration" min="1" max="30" value="5">
+                    </div>
+                    <div class="form-group">
+                        <label for="longBreakDuration">Long Break (minutes)</label>
+                        <input type="number" id="longBreakDuration" min="1" max="60" value="15">
+                    </div>
+                    <div class="form-group">
+                        <label for="longBreakInterval">Long Break Interval</label>
+                        <input type="number" id="longBreakInterval" min="2" max="8" value="4">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h3>🎨 Appearance</h3>
+                <div class="form-group">
+                    <label for="theme">Theme</label>
+                    <select id="theme">
+                        <option value="system">System Default</option>
+                        <option value="light">Light</option>
+                        <option value="dark">Dark</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h3>🔔 Notifications & Sounds</h3>
+                <div class="form-group">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="notifications" checked>
+                        <label for="notifications">Enable notifications</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="sounds" checked>
+                        <label for="sounds">Enable notification sounds</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h3>⚙️ Automation</h3>
+                <div class="form-group">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="autoStartBreaks">
+                        <label for="autoStartBreaks">Auto-start breaks</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="autoStartPomodoros">
+                        <label for="autoStartPomodoros">Auto-start pomodoros after breaks</label>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="save-button" onclick="saveSettings()">Save Settings</button>
+        </div>
+    </div>
+    
+    <script>
+        // Load settings when page opens
+        window.addEventListener('load', loadSettings);
+        
+        function loadSettings() {
+            chrome.storage.local.get(['pomodoroState'], (result) => {
+                if (result.pomodoroState) {
+                    const state = JSON.parse(result.pomodoroState);
+                    const settings = state.state?.settings;
+                    
+                    if (settings) {
+                        document.getElementById('pomodoroDuration').value = settings.pomodoroDuration || 25;
+                        document.getElementById('shortBreakDuration').value = settings.shortBreakDuration || 5;
+                        document.getElementById('longBreakDuration').value = settings.longBreakDuration || 15;
+                        document.getElementById('longBreakInterval').value = settings.longBreakInterval || 4;
+                        document.getElementById('theme').value = settings.theme || 'system';
+                        document.getElementById('notifications').checked = settings.notifications !== false;
+                        document.getElementById('sounds').checked = settings.sounds !== false;
+                        document.getElementById('autoStartBreaks').checked = settings.autoStartBreaks || false;
+                        document.getElementById('autoStartPomodoros').checked = settings.autoStartPomodoros || false;
+                    }
+                }
+            });
+        }
+        
+        function saveSettings() {
+            const settings = {
+                pomodoroDuration: parseInt(document.getElementById('pomodoroDuration').value),
+                shortBreakDuration: parseInt(document.getElementById('shortBreakDuration').value),
+                longBreakDuration: parseInt(document.getElementById('longBreakDuration').value),
+                longBreakInterval: parseInt(document.getElementById('longBreakInterval').value),
+                theme: document.getElementById('theme').value,
+                notifications: document.getElementById('notifications').checked,
+                sounds: document.getElementById('sounds').checked,
+                autoStartBreaks: document.getElementById('autoStartBreaks').checked,
+                autoStartPomodoros: document.getElementById('autoStartPomodoros').checked
+            };
+            
+            // Get current state and update settings
+            chrome.storage.local.get(['pomodoroState'], (result) => {
+                let state = result.pomodoroState ? JSON.parse(result.pomodoroState) : { state: { settings: {} } };
+                
+                if (!state.state) state.state = {};
+                state.state.settings = { ...state.state.settings, ...settings };
+                
+                chrome.storage.local.set({ pomodoroState: JSON.stringify(state) }, () => {
+                    // Show success message
+                    const successMessage = document.getElementById('successMessage');
+                    successMessage.style.display = 'block';
+                    setTimeout(() => {
+                        successMessage.style.display = 'none';
+                    }, 3000);
+                });
+            });
+        }
+    </script>
+</body>
+</html>

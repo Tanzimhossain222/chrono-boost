@@ -1,0 +1,36 @@
+{
+  "manifest_version": 3,
+  "name": "Pomodoro Timer Pro",
+  "version": "1.0.0",
+  "description": "A beautiful and productive Pomodoro timer to boost your focus and manage tasks effectively.",
+  "icons": {
+    "16": "icons/pomodoro-16.png",
+    "48": "icons/pomodoro-48.png",
+    "128": "icons/pomodoro-128.png"
+  },
+  "action": {
+    "default_popup": "index.html",
+    "default_icon": {
+      "16": "icons/pomodoro-16.png",
+      "48": "icons/pomodoro-48.png",
+      "128": "icons/pomodoro-128.png"
+    },
+    "default_title": "Pomodoro Timer Pro"
+  },
+  "permissions": [
+    "storage",
+    "alarms",
+    "notifications",
+    "activeTab"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "options_page": "options.html",
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self';"
+  },
+  "host_permissions": [
+    "<all_urls>"
+  ]
+}

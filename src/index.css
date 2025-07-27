@@ -12,9 +12,9 @@
     
     /* Glass Morphism Background */
     --glass-bg: 255 255 255;
-    --glass-bg-opacity: 0.1;
-    --glass-border: 255 255 255;
-    --glass-border-opacity: 0.2;
+    --glass-bg-opacity: 0.8;
+    --glass-border: 220 10% 88%;
+    --glass-border-opacity: 1;
     
     /* Primary - Pomodoro Red */
     --primary: 4 90% 65%;
@@ -66,7 +66,7 @@
     --gradient-bg: linear-gradient(135deg, hsl(245 50% 98%), hsl(220 60% 96%));
     --gradient-glass: linear-gradient(135deg, 
       hsla(var(--glass-bg), var(--glass-bg-opacity)), 
-      hsla(var(--glass-bg), calc(var(--glass-bg-opacity) * 0.6)));
+      hsla(var(--glass-bg), 0.95));
     
     /* Animations */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
